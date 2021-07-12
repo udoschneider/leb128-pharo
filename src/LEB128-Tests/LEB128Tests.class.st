@@ -880,19 +880,40 @@ LEB128Tests >> signedLeb128IntegerData [
 ]
 
 { #category : #tests }
+LEB128Tests >> testBulkDecodeSigned [
+
+	self unsignedLeb128IntegerData do: [ :test | 
+		self assert: test second signedLeb128Integer equals: test first ]
+]
+
+{ #category : #tests }
+LEB128Tests >> testBulkDecodeUnsigned [
+
+	self signedLeb128IntegerData do: [ :test | 
+		self assert: test second unsignedLeb128Integer equals: test first ]
+]
+
+{ #category : #tests }
+LEB128Tests >> testBulkEncodeSigned [
+
+	self unsignedLeb128IntegerData do: [ :test | 
+		self assert: test first asSignedLeb128 equals: test second ]
+]
+
+{ #category : #tests }
+LEB128Tests >> testBulkEncodeUnsigned [
+
+	self signedLeb128IntegerData do: [ :test | 
+		self assert: test first asUnsignedLeb128 equals: test second ]
+]
+
+{ #category : #tests }
 LEB128Tests >> testDecodeSignedByteArray [
 
 	self
 		assert: #[ 16rC0 16rBB 16r78 ] signedLeb128Integer equals: -123456;
 		assert: (#[ 16r78 16rC0 16rBB 16r78 ] signedLeb128IntegerAt: 2)
 		equals: -123456
-]
-
-{ #category : #tests }
-LEB128Tests >> testDecodeSignedData [
-
-	self unsignedLeb128IntegerData do: [ :test | 
-		self assert: test second signedLeb128Integer equals: test first ]
 ]
 
 { #category : #tests }
@@ -905,14 +926,19 @@ LEB128Tests >> testDecodeUnsignedByteArray [
 ]
 
 { #category : #tests }
-LEB128Tests >> testDecodeUnsignedData [
+LEB128Tests >> testEncodeSignedInteger [
 
-	self signedLeb128IntegerData do: [ :test | 
-		self assert: test second unsignedLeb128Integer equals: test first ]
+	self assert: -123456 asSignedLeb128 equals: #[ 16rC0 16rBB 16r78 ]
 ]
 
 { #category : #tests }
-LEB128Tests >> testEncodeSignedByteArray [
+LEB128Tests >> testEncodeUnsignedInteger [
+
+	self assert: 624485 asUnsignedLeb128 equals: #[ 16rE5 16r8E 16r26 ]
+]
+
+{ #category : #tests }
+LEB128Tests >> testInplaceEncodeSignedByteArray [
 
 	self
 		assert: (#[ 0 0 0 ] copy signedLeb128IntegerPut: -123456)
@@ -922,39 +948,13 @@ LEB128Tests >> testEncodeSignedByteArray [
 ]
 
 { #category : #tests }
-LEB128Tests >> testEncodeSignedData [
-
-	self unsignedLeb128IntegerData do: [ :test | 
-		self assert: test first asSignedLeb128 equals: test second ]
-]
-
-{ #category : #tests }
-LEB128Tests >> testEncodeSignedInteger [
-
-	self assert: -123456 asSignedLeb128 equals: #[ 16rC0 16rBB 16r78 ]
-]
-
-{ #category : #tests }
-LEB128Tests >> testEncodeUnsignedByteArray [
+LEB128Tests >> testInplaceEncodeUnsignedByteArray [
 
 	self
 		assert: (#[ 0 0 0 ] copy unsignedLeb128IntegerPut: 624485)
 		equals: #[ 16rE5 16r8E 16r26 ];
 		assert: (#[ 0 0 0 0 ] copy unsignedLeb128IntegerAt: 2 put: 624485)
 		equals: #[ 0 16rE5 16r8E 16r26 ]
-]
-
-{ #category : #tests }
-LEB128Tests >> testEncodeUnsignedData [
-
-	self signedLeb128IntegerData do: [ :test | 
-		self assert: test first asUnsignedLeb128 equals: test second ]
-]
-
-{ #category : #tests }
-LEB128Tests >> testEncodeUnsignedInteger [
-
-	self assert: 624485 asUnsignedLeb128 equals: #[ 16rE5 16r8E 16r26 ]
 ]
 
 { #category : #'test data' }
